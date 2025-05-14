@@ -1,0 +1,460 @@
+{
+	"info": {
+		"_postman_id": "c631df3a-c483-4fb3-b037-b0c51e3a937e",
+		"name": "RD_API",
+		"description": "# 🚀 Get started here\n\nThis template guides you through CRUD operations (GET, POST, PUT, DELETE), variables, and tests.\n\n## 🔖 **How to use this template**\n\n#### **Step 1: Send requests**\n\nRESTful APIs allow you to perform CRUD operations using the POST, GET, PUT, and DELETE HTTP methods.\n\nThis collection contains each of these [request](https://learning.postman.com/docs/sending-requests/requests/) types. Open each request and click \"Send\" to see what happens.\n\n#### **Step 2: View responses**\n\nObserve the response tab for status code (200 OK), response time, and size.\n\n#### **Step 3: Send new Body data**\n\nUpdate or add new data in \"Body\" in the POST request. Typically, Body data is also used in PUT request.\n\n```\n{\n    \"name\": \"Add your name in the body\"\n}\n\n ```\n\n#### **Step 4: Update the variable**\n\nVariables enable you to store and reuse values in Postman. We have created a [variable](https://learning.postman.com/docs/sending-requests/variables/) called `base_url` with the sample request [https://postman-api-learner.glitch.me](https://postman-api-learner.glitch.me). Replace it with your API endpoint to customize this collection.\n\n#### **Step 5: Add tests in the \"Scripts\" tab**\n\nAdding tests to your requests can help you confirm that your API is working as expected. You can write test scripts in JavaScript and view the output in the \"Test Results\" tab.\n\n<img src=\"https://content.pstmn.io/fa30ea0a-373d-4545-a668-e7b283cca343/aW1hZ2UucG5n\" alt=\"\" height=\"1530\" width=\"2162\">\n\n## 💪 Pro tips\n\n- Use folders to group related requests and organize the collection.\n    \n- Add more [scripts](https://learning.postman.com/docs/writing-scripts/intro-to-scripts/) to verify if the API works as expected and execute workflows.\n    \n\n## 💡Related templates\n\n[API testing basics](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9a37a28-055b-49cd-8c7e-97494a21eb54&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[API documentation](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=e9c28f47-1253-44af-a2f3-20dce4da1f18&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)  \n[Authorization methods](https://go.postman.co/redirect/workspace?type=personal&collectionTemplateId=31a9a6ed-4cdf-4ced-984c-d12c9aec1c27&sourceTemplateId=ddb19591-3097-41cf-82af-c84273e56719)",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "28088621",
+		"_collection_link": "https://universal-trinity-287039.postman.co/workspace/Yatsenko~ad624216-4fba-4ef3-af3d-133463384292/collection/28088621-c631df3a-c483-4fb3-b037-b0c51e3a937e?action=share&source=collection_link&creator=28088621"
+	},
+	"item": [
+		{
+			"name": "createlist_lesson5",
+			"item": [
+				{
+					"name": "Create Space",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful POST request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+									"});",
+									"",
+									"",
+									"pm.test(\"Create new id of Space:  space_id\", function () {",
+									"    const spId = pm.response.json().id;",
+									"    pm.expect(spId).to.be.not.empty;",
+									"    pm.environment.set(\"space_id\", spId);",
+									"    console.log(\"new space_id: \", spId);  ",
+									"});",
+									"",
+									"pm.test(`Checking name of Space ${pm.environment.get(\"name_SP\")}`, function () {",
+									"    const nameSp = pm.response.json().name;",
+									"    pm.expect(nameSp).to.be.not.empty;",
+									"    pm.environment.set(\"name_SP\", nameSp);",
+									"    console.log(\"new nameSp: \", nameSp)",
+									"   ",
+									"});",
+									"",
+									"",
+									"const Ajv = require('ajv');",
+									"const ajv = new Ajv();",
+									"",
+									"const spaceSchema = {",
+									"    type: \"object\",",
+									"    properties: {",
+									"        id: { type: \"string\" },",
+									"        name: { type: \"string\" },",
+									"        color: { type: [\"string\", \"null\"] },",
+									"        private: { type: \"boolean\" },",
+									"        avatar: { type: [\"string\", \"null\"] },",
+									"        admin_can_manage: { type: [\"boolean\", \"null\"] }",
+									"    },",
+									"    required: [\"id\", \"name\"]",
+									"};",
+									"",
+									"const validateSpace = ajv.compile(spaceSchema);",
+									"const spaceResponse = pm.response.json();",
+									"",
+									"pm.test(\"Space Schema is valid\", function () {",
+									"    const validSpace = validateSpace(spaceResponse);",
+									"    pm.expect(validSpace, JSON.stringify(validateSpace.errors)).to.be.true;",
+									"});",
+									"const response = pm.response.json();",
+									"",
+									"",
+									"",
+									"",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var newNameOfSpace = pm.variables.replaceIn('{{$randomLastName}}');\r",
+									"pm.environment.set(\"newNameOfSpace\", newNameOfSpace);\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"value": "{{token_key}}",
+								"in": "header",
+								"key": "Authorization"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_188602531_9DLIWL2C3HXR6894547V6TVV1CW2UFUY",
+								"disabled": true
+							},
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{\n  \"multiple_assignees\": true,\n  \"features\": {\n    \"due_dates\": {\n      \"enabled\": true,\n      \"start_date\": true,\n      \"remap_due_dates\": true,\n      \"remap_closed_due_date\": true\n    },\n    \"time_tracking\": {\n      \"enabled\": true\n    },\n    \"tags\": {\n      \"enabled\": true\n    },\n    \"time_estimates\": {\n      \"enabled\": true\n    },\n    \"checklists\": {\n      \"enabled\": true\n    },\n    \"custom_fields\": {\n      \"enabled\": true\n    },\n    \"remap_dependencies\": {\n      \"enabled\": true\n    },\n    \"dependency_warning\": {\n      \"enabled\": true\n    },\n    \"portfolios\": {\n      \"enabled\": true\n    }\n  },\n  \"name\": \"{{newNameOfSpace}}\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/team/{{team_id}}/space",
+						"description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+					},
+					"response": []
+				},
+				{
+					"name": "Create FolderList",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"var nameOfFolder = pm.variables.replaceIn('{{$randomLastName}}');\r",
+									"pm.environment.set(\"nameOfFolder\", nameOfFolder);\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"Checking created ID of folder\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.id).to.exist;\r",
+									"    pm.environment.set(\"folger_Id\", jsonData.id);\r",
+									"    console.log(`folger_Id: ${pm.environment.get(\"folger_Id\")}, folder name: ${pm.environment.get(\"nameOfFolder\")}`);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"const Ajv = require('ajv');\r",
+									"const ajv = new Ajv();\r",
+									"\r",
+									"const schema = {\r",
+									"   type: \"object\",\r",
+									"   properties: {\r",
+									"       id: { type: \"string\" },\r",
+									"       name: { type: \"string\" },\r",
+									"       deleted: { type: \"boolean\" },\r",
+									"       orderindex: { type: \"integer\" },\r",
+									"       content: { type: \"string\" },\r",
+									"       priority: { type: [\"string\", \"null\"] },\r",
+									"       assignee: { type: [\"string\", \"null\"] },\r",
+									"       due_date: { type: [\"string\", \"null\"] },\r",
+									"       start_date: { type: [\"string\", \"null\"] },\r",
+									"       folder: {\r",
+									"           type: \"object\",\r",
+									"           properties: {\r",
+									"               id: { type: \"string\" },\r",
+									"               name: { type: \"string\" },\r",
+									"               hidden: { type: \"boolean\" },\r",
+									"               access: { type: \"boolean\" }\r",
+									"           },\r",
+									"           required: [\"id\", \"name\", \"hidden\", \"access\"]\r",
+									"       },\r",
+									"       space: {\r",
+									"           type: \"object\",\r",
+									"           properties: {\r",
+									"               id: { type: \"string\" },\r",
+									"               name: { type: \"string\" },\r",
+									"               access: { type: \"boolean\" }\r",
+									"           },\r",
+									"           required: [\"id\", \"name\", \"access\"]\r",
+									"       },\r",
+									"       inbound_address: { type: \"string\" },\r",
+									"       archived: { type: \"boolean\" },\r",
+									"       override_statuses: { type: \"boolean\" },\r",
+									"       statuses: {\r",
+									"           type: \"array\",\r",
+									"           items: {\r",
+									"               type: \"object\",\r",
+									"               properties: {\r",
+									"                   id: { type: \"string\" },\r",
+									"                   status: { type: \"string\" },\r",
+									"                   orderindex: { type: \"integer\" },\r",
+									"                   color: { type: \"string\" },\r",
+									"                   type: { type: \"string\" },\r",
+									"                   status_group: { type: \"string\" }\r",
+									"               },\r",
+									"               required: [\"id\", \"status\", \"orderindex\", \"color\", \"type\", \"status_group\"]\r",
+									"           }\r",
+									"       },\r",
+									"       permission_level: { type: \"string\" }\r",
+									"   },\r",
+									"   required: [\"id\", \"name\", \"deleted\", \"orderindex\", \"content\", \"folder\", \"space\", \"inbound_address\", \"archived\", \"override_statuses\", \"statuses\", \"permission_level\"]\r",
+									"};\r",
+									"\r",
+									"const validate = ajv.compile(schema);\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Schema is valid\", function () {\r",
+									"   const valid = validate(response);\r",
+									"   pm.expect(valid, JSON.stringify(validate.errors)).to.be.true;\r",
+									"});\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"value": "{{token_key}}",
+								"in": "header",
+								"key": "Authorization"
+							}
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_188602531_9DLIWL2C3HXR6894547V6TVV1CW2UFUY",
+								"disabled": true
+							},
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "content-type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "\n{\n  \"name\": \"{{nameOfFolder}}\",\n  \"content\": \"this text\"\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": "{{url}}/space/{{space_id}}/list"
+					},
+					"response": []
+				},
+				{
+					"name": "Get Folderless Lists",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});\r",
+									"\r",
+									"pm.test(\"output all IDs from folder\", function () {\r",
+									"    var jsonData = pm.response.json();\r",
+									"    pm.expect(jsonData.lists).to.be.an('array').that.is.not.empty;\r",
+									"    jsonData.lists.forEach(item => {\r",
+									"        pm.expect(item.id).to.exist;\r",
+									"        pm.expect(item.id).to.be.a('string');\r",
+									"    });\r",
+									"\r",
+									"    const allIds = jsonData.lists.map(item => item.id).join(\", \");\r",
+									"    console.log(\"All IDs:\", allIds);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"const Ajv = require('ajv');\r",
+									"const ajv = new Ajv();\r",
+									"\r",
+									"const schema = {\r",
+									"    \"type\": \"object\",\r",
+									"    \"properties\": {\r",
+									"        \"lists\": {\r",
+									"            \"type\": \"array\",\r",
+									"            \"items\": {\r",
+									"                \"type\": \"object\",\r",
+									"                \"properties\": {\r",
+									"                    \"id\": { \"type\": \"string\" },\r",
+									"                    \"name\": { \"type\": \"string\" },\r",
+									"                    \"orderindex\": { \"type\": \"integer\" },\r",
+									"                    \"content\": { \"type\": \"string\" },\r",
+									"                    \"status\": { \"type\": \"null\" },\r",
+									"                    \"priority\": { \"type\": \"null\" },\r",
+									"                    \"assignee\": { \"type\": \"null\" },\r",
+									"                    \"task_count\": { \"type\": \"integer\" },\r",
+									"                    \"due_date\": { \"type\": \"null\" },\r",
+									"                    \"start_date\": { \"type\": \"null\" },\r",
+									"                    \"folder\": {\r",
+									"                        \"type\": \"object\",\r",
+									"                        \"properties\": {\r",
+									"                            \"id\": { \"type\": \"string\" },\r",
+									"                            \"name\": { \"type\": \"string\" },\r",
+									"                            \"hidden\": { \"type\": \"boolean\" },\r",
+									"                            \"access\": { \"type\": \"boolean\" }\r",
+									"                        },\r",
+									"                        \"required\": [\"id\", \"name\", \"hidden\", \"access\"]\r",
+									"                    },\r",
+									"                    \"space\": {\r",
+									"                        \"type\": \"object\",\r",
+									"                        \"properties\": {\r",
+									"                            \"id\": { \"type\": \"string\" },\r",
+									"                            \"name\": { \"type\": \"string\" },\r",
+									"                            \"access\": { \"type\": \"boolean\" }\r",
+									"                        },\r",
+									"                        \"required\": [\"id\", \"name\", \"access\"]\r",
+									"                    },\r",
+									"                    \"archived\": { \"type\": \"boolean\" },\r",
+									"                    \"override_statuses\": { \"type\": \"boolean\" },\r",
+									"                    \"permission_level\": { \"type\": \"string\" }\r",
+									"                },\r",
+									"                \"required\": [\"id\", \"name\", \"orderindex\", \"content\", \"folder\", \"space\", \"archived\", \"override_statuses\", \"permission_level\"]\r",
+									"            }\r",
+									"        }\r",
+									"    },\r",
+									"    \"required\": [\"lists\"]\r",
+									"};\r",
+									"\r",
+									"const validate = ajv.compile(schema);\r",
+									"const response = pm.response.json();\r",
+									"\r",
+									"pm.test(\"Schema is valid\", function () {\r",
+									"    const valid = validate(response);\r",
+									"    pm.expect(valid, JSON.stringify(validate.errors)).to.be.true;\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"value": "{{token_key}}",
+								"in": "header",
+								"key": "Authorization"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_188602531_EEAEFB8ZKNKPHTRGM2CL6XNQIC9JQ6OJ",
+								"disabled": true
+							},
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{url}}/space/{{space_id}}/list"
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Space",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Successful DELETE request\", function () {",
+									"    pm.expect(pm.response.code).to.be.oneOf([200, 202, 204]);",
+									"});",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "apikey",
+							"apikey": {
+								"value": "{{token_key}}",
+								"in": "header",
+								"key": "Authorization"
+							}
+						},
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "pk_188602531_9DLIWL2C3HXR6894547V6TVV1CW2UFUY"
+							},
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": "{{url}}/space/{{space_id}}",
+						"description": "This is a DELETE request, and it is used to delete data that was previously created via a POST request. You typically identify the entity being updated by including an identifier in the URL (eg. `id=1`).\n\nA successful DELETE request typically returns a `200 OK`, `202 Accepted`, or `204 No Content` response code."
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
